@@ -5,7 +5,7 @@ import argparse
 import json
 import pandas as pd
 
-def parse(in_file, out_file):
+def parse_json(in_file, out_file):
     """
         Convert the issues json exported from bitbucket
         to excel
@@ -23,7 +23,14 @@ def parse(in_file, out_file):
         print('No issues')
         return
     
-    issues_df = pd.DataFrame()
+    issues_df = pd.DataFrame(columns=[
+        'Title',
+        'Description',
+        'Date added',
+        'Kind',
+        'Priority',
+        'Status',
+    ])
     for issue in data['issues']:
         ser = pd.Series({
             'Title': issue['title'],
@@ -33,9 +40,18 @@ def parse(in_file, out_file):
             'Priority': issue['priority'],
             'Status': issue['status']
         })
-        issues_df = issues_df.append(issue)
+        issues_df = issues_df.append(ser, ignore_index=True)
     
     writer = pd.ExcelWriter(out_file, engine='xlsxwriter')
     issues_df.to_excel(writer, sheet_name='Sheet1')
 
     writer.save()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Generate excel output')
+    parser.add_argument('-i', '--input', help='Input json file', type=str)
+    parser.add_argument('-o', '--output', help='Output excel file', type=str)
+    args = parser.parse_args()
+    parse_json(args.input, args.output)
+
+
