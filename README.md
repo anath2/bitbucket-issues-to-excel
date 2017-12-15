@@ -16,4 +16,3 @@ External dependencies are:
 
 * Pandas
 *  Xlsxwriter
-*  
