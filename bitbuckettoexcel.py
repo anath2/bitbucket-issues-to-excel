@@ -14,12 +14,12 @@ def parse_json(in_file, out_file):
         Convert the issues json exported from bitbucket
         to excel
         Columns
-            1) Title
-            2) Description
-            3) Date added
-            4) Kind
-            5) Priority
-            6) Status
+            1) Title: String
+            2) Description: String
+            3) Date added: Day date month year
+            4) Kind: String(Uppercase)
+            5) Priority: String(Uppercase)
+            6) Status: String(Uppercase)
     """
     with open(in_file) as f:
         data = json.load(f)
@@ -41,9 +41,9 @@ def parse_json(in_file, out_file):
             'Title': issue['title'],
             'Description': issue['content'],
             'Date added': _format_time(issue['created_on']),
-            'Kind': issue['kind'],
-            'Priority': issue['priority'],
-            'Status': issue['status']
+            'Kind': issue['kind'].upper(),
+            'Priority': issue['priority'].upper(),
+            'Status': issue['status'].upper()
         })
         issues_df = issues_df.append(ser, ignore_index=True)
 
