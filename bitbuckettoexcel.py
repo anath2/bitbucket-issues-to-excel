@@ -1,6 +1,7 @@
 """
     Script to convert bitbucket issues export to excel
 """
+import os
 import argparse
 import json
 import datetime
@@ -50,6 +51,19 @@ def parse_json(in_file, out_file):
     writer = pd.ExcelWriter(out_file, engine='xlsxwriter')
     issues_df.to_excel(writer, sheet_name='Sheet1', index=False)
     _format_and_save_excel(writer)
+
+
+def _add_date(f_path):
+    # Add datetime to output file
+    f_name = os.path.basename(f_path)
+    datetime_str = datetime.datetime.strftime(
+        datetime.datetime.now(),
+        '%Y%m%d'
+    )
+    return os.path.join(
+        os.path.dirname(f_path),
+        datetime_str + f_name
+    )
 
 def _format_time(time_str):
     # Format str looks something like this 2017-12-14T07:10:34.500895+00:00
@@ -147,6 +161,5 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--input', help='Input json file', type=str)
     parser.add_argument('-o', '--output', help='Output excel file', type=str)
     args = parser.parse_args()
-    parse_json(args.input, args.output)
 
-
+    parse_json(args.input, _add_date(args.output))
